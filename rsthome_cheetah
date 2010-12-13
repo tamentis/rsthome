@@ -1,0 +1,49 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+"""
+Build index.html files in the doc, projects, etc.
+
+usage: rsthome_render config.ini index.rst > index.html
+"""
+
+from __future__ import with_statement
+import warnings
+import sys
+import re
+from Cheetah.Template import Template
+from rsthome.baseapp import BaseApp
+
+global_var_re = re.compile(r'.*set global \$([\w ]+) = "([^"]+)')
+
+warnings.simplefilter("ignore")
+
+class RstHomeRender(BaseApp):
+
+    def render(self, source_filename):
+        """Build parse one cheetah template and outputs to stdout.
+
+        :param source_filename: Cheetah template to be parsed.
+        """
+        t = Template(file=source_filename)
+
+        with open(source_filename) as fp:
+            lines = fp.readlines()
+
+        vars = {}
+        for line in lines:
+            matches = re.match(global_var_re, line)
+            if matches:
+                vars[matches.group(1)] = matches.group(2)
+        vars["html_body"] = str(t)
+
+        return self.render_template(self.config["indexes.template"], vars)
+
+
+if __name__ == '__main__':
+    if len(sys.argv) != 3:
+        sys.stderr.write(__doc__)
+        sys.exit(-1)
+
+    app = RstHomeRender(sys.argv[1])
+    print(app.render(sys.argv[2]))

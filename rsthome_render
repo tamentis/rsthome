@@ -1,0 +1,34 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+"""
+Build index.html files in the doc, projects, etc.
+
+usage: rsthome_render config.ini index.rst > index.html
+"""
+
+import sys
+from rsthome.baseapp import BaseApp
+
+
+class RstHomeRender(BaseApp):
+
+    def render(self, source_filename):
+        """Build parse one rst file and outputs to stdout.
+
+        :param source_filename: File to be parsed.
+        """
+        parts = self.render_rst(source_filename)
+        parts.update(dict(lastupdate=u"2010-12-08 20:08:45"))
+        #parts["html_body"] = parts["html_body"].encode("utf-8")
+        return self.render_template(self.config["indexes.template"], parts)
+
+
+if __name__ == '__main__':
+    if len(sys.argv) != 3:
+        sys.stderr.write(__doc__)
+        sys.exit(-1)
+
+    app = RstHomeRender(sys.argv[1])
+    s = app.render(sys.argv[2])
+    print(s.encode("utf8"))

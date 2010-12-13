@@ -1,0 +1,38 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+"""
+Build index.html files in the doc, projects, etc.
+
+usage: rsthome_render config.ini > index.html
+"""
+
+from __future__ import with_statement
+import sys
+import simplejson as json
+from rsthome.baseapp import BaseApp
+
+
+class RstHomeHome(BaseApp):
+
+    def render(self):
+        """Build parse one rst file and outputs to stdout.
+
+        :param source_filename: File to be parsed.
+        """
+        with open(self.config["home.newssource"]) as fp:
+            stories = json.load(fp)
+
+        filename = self.config["home.template"]
+        parts = dict(stories=stories)
+
+        return self.render_template(filename, parts)
+
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        sys.stderr.write(__doc__)
+        sys.exit(-1)
+
+    app = RstHomeHome(sys.argv[1])
+    s = app.render()
+    print(s.encode("utf8"))
