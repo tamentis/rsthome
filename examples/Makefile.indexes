@@ -1,0 +1,10 @@
+# Example Makefile for rst based indexes.
+
+all: index.html
+
+index.html: index.rst
+	rsthome_render ../../config.ini index.rst > index.html.tmp
+	mv index.html.tmp index.html
+
+clean:
+	rm -f index.html index.html.tmp

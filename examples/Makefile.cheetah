@@ -1,0 +1,10 @@
+# Example Makefile for cheetah based indexes.
+
+all: index.html
+
+index.html: index.tmpl
+	rsthome_cheetah ../../config.ini index.tmpl > index.html.tmp
+	mv index.html.tmp index.html
+
+clean:
+	rm -f index.html index.html.tmp
