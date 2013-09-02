@@ -10,6 +10,12 @@ setup(
     author_email="tamentis@neopulsar.org",
     url="http://tamentis.com/",
     packages=["rsthome"],
+    install_requires=[
+        "jinja2",
+        "pygments",
+        "docutils",
+        "cheetah",
+    ],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
